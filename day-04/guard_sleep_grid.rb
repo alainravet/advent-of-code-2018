@@ -14,12 +14,20 @@ module GuardSleep
       @total_slept_minutes                  += 1
     end
 
-    def minute_with_most_sleep
+    def most_slept_minute_and_sleep_length
       longest_sleep_length  = slept_minutes_counters.values.max
-      minute, _sleep_length = slept_minutes_counters.detect { |_slept_minute, sleep_length|
+      most_slept_minute, sleep_length = slept_minutes_counters.detect { |_slept_minute, sleep_length|
         sleep_length == longest_sleep_length
       }
-      minute
+      [most_slept_minute, sleep_length]
+    end
+
+    def minute_with_most_sleep
+      most_slept_minute_and_sleep_length.first
+    end
+
+    def longest_single_minute_sleep
+      most_slept_minute_and_sleep_length.last
     end
   end
 end

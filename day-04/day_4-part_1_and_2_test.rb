@@ -31,30 +31,34 @@ OBSERVATIONS_EVENTS.each do |s|
   line_processor.process_guard_event_line(s)
 end
 
+# test intermediary data:
+
 expected_slept_minutes_counters = {
   1789 => { 5 => 1, 6 => 1, 7 => 2, 8 => 2, 9 => 1, 12 => 1 },
-  #        FIRST MAX HERE : ^^^^^^    (with strategy 1)
-  2617 => { 24 => 3, 25 => 1, 26 => 1, 27 => 1, 28 => 1}
+  #                         ^^^^^^ <------------------- WINNER for strategy 1)
+  2617 => { 24 => 3, 25 => 1, 26 => 1, 27 => 1, 28 => 1 }
+  #         ^^^^^^ <----------------------------------- WINNER for strategy 2)
 }
-
-expected_total_slept_minutes = {
-  1789 => (1 + 1 + 2 + 2 + 1 + 1), # == 8
-  2617 => (3 + 1 + 1 + 1 + 1)      # == 7
-}
-
 recorder.guard_sleep_grid(1789).tap do |grid|
-  raise grid.inspect unless grid.total_slept_minutes == expected_total_slept_minutes[1789]
   raise grid.inspect unless grid.slept_minutes_counters == expected_slept_minutes_counters[1789]
 end
-
 recorder.guard_sleep_grid(2617).tap do |grid|
-  raise grid.inspect unless grid.total_slept_minutes == expected_total_slept_minutes[2617]
   raise grid.inspect unless grid.slept_minutes_counters == expected_slept_minutes_counters[2617]
 end
 
-recorder.longest_sleep_details.tap do |details|
-  raise details.inspect unless details.guard_id               == 1789 # <- answer part a (guard_id)
-  raise details.inspect unless details.minute_with_most_sleep == 7    # <- answer part b (minute_with_most_sleep)
-  raise details.inspect unless details.total_slept_minutes    == 8
+# PART 1: (strategy 1)
+
+recorder.first_sleep_grid_with_longuest_total_sleep.tap do |winner|
+  raise winner.inspect unless winner.guard_id               == 1789   # <- answer 1 part a (guard_id)
+  raise winner.inspect unless winner.minute_with_most_sleep == 7      # <- answer 1 part b (minute_with_most_sleep)
 end
 puts "\n*** SUCCESS: test day 4 part 1"
+
+# PART 2: (strategy 2)
+
+recorder.first_sleep_grid_with_most_slept_minute.tap do |winner|
+  raise winner.inspect unless winner.guard_id               == 2617   # <- answer 2 part a (guard_id)
+  raise winner.inspect unless winner.minute_with_most_sleep == 24     # <- answer 2 part b (minute_with_most_sleep)
+end
+
+puts "\n*** SUCCESS: test day 4 part 2"
