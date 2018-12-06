@@ -1,4 +1,5 @@
 require_relative 'overlap_detector'
+require_relative '../test_helper'
 
 claims = [
   '#1 @ 1,3: 4x4',
@@ -21,13 +22,16 @@ expected_grid = "
 .222233
 .222233".strip
 
-raise    if od.overlapsed_cells_count != expected_overlaps_count
-raise ss if od.grid_to_s              != expected_grid
+assert_equal expected_overlaps_count,
+             od.overlapsed_cells_count
+assert_equal expected_grid,
+             od.grid_to_s
 
 # PART 2
 
 expected_successful_claims = [3]
 
-raise od.successful_claims.inspect   if od.successful_claims != expected_successful_claims
+assert_equal expected_successful_claims,
+             od.successful_claims
 
-puts 'tests: SUCCESS at %s' % Time.now
+puts "\n*** SUCCESS: test day 3"

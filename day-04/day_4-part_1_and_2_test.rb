@@ -1,5 +1,6 @@
 require_relative 'guard_sleep_recorder'
 require_relative 'guard_event_line_processor'
+require_relative '../test_helper'
 
 OBSERVATIONS_EVENTS = [
   '[1518-02-12 23:50] Guard #1789 begins shift', # guard 1
@@ -39,26 +40,26 @@ expected_slept_minutes_counters = {
   2617 => { 24 => 3, 25 => 1, 26 => 1, 27 => 1, 28 => 1 }
   #         ^^^^^^ <----------------------------------- WINNER for strategy 2)
 }
-recorder.guard_sleep_grid(1789).tap do |grid|
-  raise grid.inspect unless grid.slept_minutes_counters == expected_slept_minutes_counters[1789]
-end
-recorder.guard_sleep_grid(2617).tap do |grid|
-  raise grid.inspect unless grid.slept_minutes_counters == expected_slept_minutes_counters[2617]
-end
+assert_equal expected_slept_minutes_counters[1789],
+             recorder.guard_sleep_grid(1789).slept_minutes_counters
+
+assert_equal expected_slept_minutes_counters[2617],
+             recorder.guard_sleep_grid(2617).slept_minutes_counters
 
 # PART 1: (strategy 1)
 
 recorder.first_sleep_grid_with_longuest_total_sleep.tap do |winner|
-  raise winner.inspect unless winner.guard_id               == 1789   # <- answer 1 part a (guard_id)
-  raise winner.inspect unless winner.minute_with_most_sleep == 7      # <- answer 1 part b (minute_with_most_sleep)
+  assert_equal 1789, winner.guard_id                # <- answer 1 part a (guard_id)
+  assert_equal 7,    winner.minute_with_most_sleep  # <- answer 1 part b (minute_with_most_sleep)
 end
+
 puts "\n*** SUCCESS: test day 4 part 1"
 
 # PART 2: (strategy 2)
 
 recorder.first_sleep_grid_with_most_slept_minute.tap do |winner|
-  raise winner.inspect unless winner.guard_id               == 2617   # <- answer 2 part a (guard_id)
-  raise winner.inspect unless winner.minute_with_most_sleep == 24     # <- answer 2 part b (minute_with_most_sleep)
+  assert_equal 2617, winner.guard_id                 # <- answer 2 part a (guard_id)
+  assert_equal 24, winner.minute_with_most_sleep     # <- answer 2 part b (minute_with_most_sleep)
 end
 
 puts "\n*** SUCCESS: test day 4 part 2"
